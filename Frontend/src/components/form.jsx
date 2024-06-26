@@ -396,7 +396,7 @@ function Form() {
             return (
               <tr key={user._id} className="bg-gray-90">
                 <td className="border px-4 py-4">{user.title}</td>
-                <td className="border px-4 py-4">{user.firstName}</td>
+                <td className="border  px-4 py-4">{user.firstName}</td>
                 <td className="border px-4 py-4">{user.lastName}</td>
                 <td className="border px-4 py-4">{user.position}</td>
                 <td className="border px-4 py-4">{user.company}</td>
