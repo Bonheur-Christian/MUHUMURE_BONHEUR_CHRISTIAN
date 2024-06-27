@@ -54,6 +54,16 @@ app.get('/all', (req, res) => {
             res.status(500).json({ message: 'User not found' })
         })
 })
+app.get('/allContacts', (req, res) => {
+    Contact.find()
+        .select('-__v')
+        .then((data) => {
+            res.status(200).json(data)
+        })
+        .catch((err) => {
+            res.status(500).json({ message: 'contact not found' })
+        })
+})
 
 
 app.delete('/delete/:id', (req, res) => {
@@ -62,6 +72,22 @@ app.delete('/delete/:id', (req, res) => {
         return res.status(400).json({ message: "Invalid ID format" });
     }
     User.findByIdAndDelete(id)
+        .then((data) => {
+            if (!data) {
+                return res.status(404).json({ message: "No record matching with the id." })
+            }
+            res.status(200).json({ message: "Record deleted successful", data })
+        })
+        .catch((err) => {
+            res.status(500).json(err)
+        })
+})
+app.delete('/deleteContact/:id', (req, res) => {
+    const id = req.params.id;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json({ message: "Invalid ID format" });
+    }
+    Contact.findByIdAndDelete(id)
         .then((data) => {
             if (!data) {
                 return res.status(404).json({ message: "No record matching with the id." })
@@ -90,8 +116,26 @@ app.get("/getUser/:id", (req, res) => {
             res.status(500).json(err)
         })
 })
+app.get("/getContact/:id", (req, res) => {
+    const { id } = req.params
 
-app.put("/update/:id", (req, res) => {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json({ message: "Invalid contact Id" })
+    }
+
+    Contact.findById(id)
+        .then((user) => {
+            if (!user) {
+                return res.status.status(400).json({ message: "contact not found" })
+            }
+            res.status(200).json(user)
+        })
+        .catch((err) => {
+            res.status(500).json(err)
+        })
+})
+
+app.put("/updateUser/:id", (req, res) => {
     const id = req.params.id
     const { title, firstName, lastName, Position, company, businessArena, employees } = req.body;
 
@@ -105,7 +149,20 @@ app.put("/update/:id", (req, res) => {
             res.status(500).json(err)
         })
 })
+app.put("/updateContact/:id", (req, res) => {
+    const id = req.params.id
+    const { streetNumber, additionalInfo, zipCode, place, country, code, phoneNumber, email } = req.body;
 
+    Contact.findByIdAndUpdate(id,
+        { streetNumber: streetNumber, additionalInfo: streetNumber, zipCode: zipCode, place: place, country: country, code: code, phoneNumber: phoneNumber, email: email },
+        { new: true })
+        .then((contact) => {
+            res.status(200).json(contact)
+        })
+        .catch((err) => {
+            res.status(500).json(err)
+        })
+})
 
 app.post('/contact', (req, res) => {
     const { streetNumber, additionalInfo, zipCode, place, country, code, phoneNumber, email } = req.body;

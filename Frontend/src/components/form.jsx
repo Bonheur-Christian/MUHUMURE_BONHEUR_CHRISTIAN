@@ -40,7 +40,7 @@ function Form() {
       });
   };
 
-  const [contact, setContact] = useState({
+  const [contactData, setContactData] = useState({
     streetNumber: "",
     additionalInfo: "",
     zipCode: "",
@@ -53,7 +53,7 @@ function Form() {
 
   const handleChange2 = (e) => {
     const { name, value } = e.target;
-    setContact((prev) => {
+    setContactData((prev) => {
       return { ...prev, [name]: value };
     });
   };
@@ -65,7 +65,7 @@ function Form() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(contact),
+      body: JSON.stringify(contactData),
     })
       .then((response) => {
         if (!response.ok) {
@@ -96,7 +96,24 @@ function Form() {
       });
   }, []);
 
-  const handleDelete = (id) => {
+  const [contacts, setContacts]  = useState([])
+  useEffect(() => {
+    fetch("http://localhost:5500/allContacts")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to get Data!");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setContacts(data);
+      })
+      .catch((err) => {
+        console.log("Error in getting data", err);
+      });
+  }, []);
+
+  const handleDelete1 = (id) => {
     fetch("http://localhost:5500/delete/" + id, {
       method: "DELETE",
     })
@@ -106,6 +123,22 @@ function Form() {
         }
         setUsers((users) => {
           return users.filter((user) => user._id !== id);
+        });
+      })
+      .catch((err) => {
+        console.log("failed to delete the record", err);
+      });
+  };
+  const handleDelete2 = (id) => {
+    fetch("http://localhost:5500/deleteContact/" + id, {
+      method: "DELETE",
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Error Occured");
+        }
+        setContacts((contacts) => {
+          return contacts.filter((contact) => contact._id !== id);
         });
       })
       .catch((err) => {
@@ -371,7 +404,7 @@ function Form() {
                 <td className="border px-4 py-4">{user.employees}</td>
                 <td className="border px-4 py-4">
                   <Link
-                    to={`/update/${user._id}`}
+                    to={`/updateUser/${user._id}`}
                     className="bg-green-500 hover:bg-green-800 text-white py-2 px-4 rounded-xl mx-2"
                   >
                     Edit
@@ -379,7 +412,7 @@ function Form() {
                   <button
                     className="bg-red-500 hover:bg-red-800 text-white py-2 px-4 rounded-xl mx-2"
                     onClick={() => {
-                      handleDelete(user._id);
+                      handleDelete1(user._id);
                     }}
                   >
                     Delete
@@ -390,6 +423,7 @@ function Form() {
           })}
         </tbody>
       </table>
+      <div>then</div>
       <table className="border mx-auto">
         <thead className="border">
           <tr className="bg-violet-200">
@@ -399,25 +433,26 @@ function Form() {
             <th className="border px-4 py-4">Place</th>
             <th className=" px-4 py-4">Country</th>
             <th className="border px-4 py-4">Code</th>
-            <th className="border px-4 py-4">Phone Number</th>            
+            <th className="border px-4 py-4">Phone Number</th>
             <th className="border px-4 py-4">Email</th>
             <th className="border px-4 py-4">Action</th>
           </tr>
         </thead>
         <tbody>
-          {users.map((user) => {
+          {contacts.map((contact) => {
             return (
-              <tr key={user._id} className="bg-gray-90">
-                <td className="border px-4 py-4">{user.title}</td>
-                <td className="border px-4 py-4">{user.firstName}</td>
-                <td className="border px-4 py-4">{user.lastName}</td>
-                <td className="border px-4 py-4">{user.position}</td>
-                <td className="border px-4 py-4">{user.company}</td>
-                <td className="border px-4 py-4">{user.businessArena}</td>
-                <td className="border px-4 py-4">{user.employees}</td>
+              <tr key={contact._id} className="bg-gray-90">
+                <td className="border px-4 py-4">{contact.streetNumber}</td>
+                <td className="border px-4 py-4">{contact.additionalInfo}</td>
+                <td className="border px-4 py-4">{contact.zipCode}</td>
+                <td className="border px-4 py-4">{contact.place}</td>
+                <td className="border px-4 py-4">{contact.country}</td>
+                <td className="border px-4 py-4">{contact.code}</td>
+                <td className="border px-4 py-4">{contact.phoneNumber}</td>
+                <td className="border px-4 py-4">{contact.email}</td>
                 <td className="border px-4 py-4">
                   <Link
-                    to={`/update/${user._id}`}
+                    to={`/updateContact/${contact._id}`}
                     className="bg-green-500 hover:bg-green-800 text-white py-2 px-4 rounded-xl mx-2"
                   >
                     Edit
@@ -425,7 +460,7 @@ function Form() {
                   <button
                     className="bg-red-500 hover:bg-red-800 text-white py-2 px-4 rounded-xl mx-2"
                     onClick={() => {
-                      handleDelete(user._id);
+                      handleDelete2(contact._id);
                     }}
                   >
                     Delete
