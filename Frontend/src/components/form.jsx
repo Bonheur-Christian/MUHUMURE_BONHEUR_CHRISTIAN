@@ -96,7 +96,7 @@ function Form() {
       });
   }, []);
 
-  const [contacts, setContacts]  = useState([])
+  const [contacts, setContacts] = useState([]);
   useEffect(() => {
     fetch("http://localhost:5500/allContacts")
       .then((response) => {
