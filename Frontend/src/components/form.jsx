@@ -6,7 +6,7 @@ function Form() {
     title: "",
     firstName: "",
     lastName: "",
-    position: "",
+    Position: "",
     company: "",
     businessArena: "",
     employees: "",

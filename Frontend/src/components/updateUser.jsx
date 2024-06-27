@@ -1,16 +1,17 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 function UpdateUser() {
   const { id } = useParams();
   const [user, setUser] = useState({
     title: "",
-    author: "",
-    ISBN: "",
-    rating: "",
+    firstName: "",
+    lastName: "",
+    position: "",
+    company: "",
+    businessArena: "",
+    employees: "",
   });
-  const navigate = useNavigate();
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setUser((Prev) => {
@@ -35,7 +36,7 @@ function UpdateUser() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    fetch("http://localhost:5500/update/" + id, {
+    fetch("http://localhost:5500/updateUser/" + id, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -43,7 +44,10 @@ function UpdateUser() {
       body: JSON.stringify(user),
     })
       .then((response) => {
-        console.log("successfully sent data", response);
+        if (!response.ok) {
+          throw new Error("failed",Error);
+        }
+        console.log("successfully sent data");
       })
       .catch((err) => {
         console.log("error occured", err);
@@ -59,6 +63,7 @@ function UpdateUser() {
             Title
           </label>
           <select
+            value={user.title}
             name="title"
             id=""
             onChange={handleChange}
@@ -77,6 +82,7 @@ function UpdateUser() {
               FirstName
             </label>
             <input
+              value={user.firstName}
               type="text"
               name="firstName"
               onChange={handleChange}
@@ -88,6 +94,7 @@ function UpdateUser() {
               LastName
             </label>
             <input
+              value={user.lastName}
               type="text"
               onChange={handleChange}
               name="lastName"
@@ -100,6 +107,7 @@ function UpdateUser() {
             Position
           </label>
           <select
+            value={user.position}
             name="position"
             onChange={handleChange}
             id=""
@@ -115,6 +123,7 @@ function UpdateUser() {
             Company
           </label>
           <input
+            value={user.company}
             type="text"
             name="company"
             onChange={handleChange}
@@ -127,6 +136,7 @@ function UpdateUser() {
               Business Arena
             </label>
             <input
+              value={user.businessArena}
               type="text"
               onChange={handleChange}
               name="businessArena"
@@ -138,6 +148,7 @@ function UpdateUser() {
               Employees
             </label>
             <select
+              value={user.employees}
               name="employees"
               id=""
               onChange={handleChange}

@@ -19,12 +19,13 @@ mongoose.connect('mongodb://localhost:27017/Exam')
 
 
 app.post('/user', (req, res) => {
-    const { title, firstName, lastName, Position, company, businessArena, employees } = req.body;
+    const { title, firstName, lastName, position, company, businessArena, employees } = req.body;
+    console.log(req.body.Position);
     const newUser = new User({
         title: title,
         firstName: firstName,
         lastName: lastName,
-        Position: Position,
+        position: position,
         company: company,
         businessArena: businessArena,
         employees: employees,
@@ -154,7 +155,7 @@ app.put("/updateContact/:id", (req, res) => {
     const { streetNumber, additionalInfo, zipCode, place, country, code, phoneNumber, email } = req.body;
 
     Contact.findByIdAndUpdate(id,
-        { streetNumber: streetNumber, additionalInfo: streetNumber, zipCode: zipCode, place: place, country: country, code: code, phoneNumber: phoneNumber, email: email },
+        { streetNumber: streetNumber, additionalInfo: additionalInfo, streetNumber: streetNumber, zipCode: zipCode, place: place, country: country, code: code, phoneNumber: phoneNumber, email: email },
         { new: true })
         .then((contact) => {
             res.status(200).json(contact)
